@@ -1,0 +1,21 @@
+node {
+
+    properties([
+        pipelineTriggers([
+            cron('H/6 * * * *'),
+            pollSCM('H/3 * * * *')
+        ])
+    ])
+
+    stage('Build') {
+        bat 'mvn clean package site'
+    }
+
+    stage('Echo Build Status') {
+        echo "Scripted Pipeline Build Successful"
+    }
+
+    stage('Archive Artifacts') {
+        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+    }
+}
