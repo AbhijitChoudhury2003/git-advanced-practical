@@ -1,17 +1,16 @@
 pipeline {
     agent any
+
+    tools {
+        maven 'Maven-3'
+    }
+
     triggers {
-        cron('H/2 * * * *')          
-        pollSCM('H/1 * * * *')  
+        cron('H/5 * * * *')  
+        pollSCM('H/2 * * * *')      
     }
 
     stages {
-
-        stage('Clone Repository') {
-            steps {
-              git 'https://github.com/AbhijitChoudhury2003/git-advanced-practical.git'
-            }
-        }
 
         stage('Build') {
             steps {
@@ -21,7 +20,7 @@ pipeline {
 
         stage('Echo Build Status') {
             steps {
-                echo "Build Successful!"
+                echo "Build completed successfully!"
             }
         }
 
@@ -29,6 +28,15 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
